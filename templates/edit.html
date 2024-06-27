@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="" method="POST">
+      <label>Edit</label>
+        <select name="choice">
+            <option value="title_option">Book Title</option>
+            <option value="author_option">Author Name</option>
+            <option value="rating_option">Rating</option>
+        </select>
+      <input name="new_name" type="text" />
+      <button type="submit">Update Book</button>
+    </form>
+    <h1>My Library</h1>
+    <ul>
+      {% if shelf==False: %}
+      <p>Library is empty</p>
+      {% else %}
+      {%for book in shelf:%}
+      <li>{{book['title']}} - {{book['author']}} - {{book['rating']}} /10</li>
+      {%endfor%}
+      {% endif %}
+    </ul>
+
+</body>
+</html>
