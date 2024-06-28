@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Add Book</title>
-  </head>
+{% include 'header.html' %}
   <body>
     <form action="" method="POST">
       <label>Book Name</label>
@@ -12,9 +9,8 @@
       <input name="author" type="text" />
       <label>Rating</label>
       <input name="rating" type="text" />
-      <label>+
-      </label>
-      <input name="rating" type="text" />
+      <!--<label>Status</label>
+      <input name="rating" type="text" />-->
       <button type="submit">Add Book</button>
     </form>
   </body>

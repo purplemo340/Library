@@ -43,7 +43,7 @@ all_books = []
 def home():
     with app.app_context():
         result = db.session.execute(db.select(Books).order_by(Books.title))
-        all_books = result.scalars()
+        all_books = list(result.scalars())
         return render_template("index.html", shelf=all_books)
 
 

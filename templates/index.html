@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Library</title>
-  </head>
+
+  {% include 'header.html' %}
+  <html>
   <body>
-    <h1>My Library</h1>
+
     <ul>
-      {% if shelf==False: %}
-      <p>Library is empty</p>
+      {% if shelf==[] %}
+      <p>Library is empty{{shelf.text}}</p>
       {% else %}
       {%for book in shelf:%}
       <li>{{book.title}} - {{book['author']}} - {{book['rating']}} /10
