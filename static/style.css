@@ -28,3 +28,23 @@ bottom:20px;
 body{
 background-color: var(--bs-beige);
 }
+button{
+    background-color: var(--bs-light-purple);
+}
+button:hover{
+    background-color: var(--bs-dust-blue);
+}
+table{
+    width: 1200px;
+    padding: 10px;
+}
+th, td{
+    text-align: center;
+    border-bottom: solid;
+    border-right: solid;
+}
+
+th{
+    text-transform: uppercase;
+    background-color: var(--bs-purple);
+}

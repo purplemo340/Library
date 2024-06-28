@@ -3,26 +3,44 @@
   <html>
   <body>
 
-    <ul>
+
       {% if shelf==[] %}
       <p>Library is empty{{shelf.text}}</p>
       {% else %}
-      {%for book in shelf:%}
-      <li>{{book.title}} - {{book['author']}} - {{book['rating']}} /10
-        <a href="{{url_for('edit', id=book.id)}}">
+      <table>
+        <tr>
+          <th> Title </th>
+          <th> Author</th>
+          <th> Rating </th>
+          <th> Choice </th>
+        </tr>
+        {%for book in shelf:%}
+        <tr>
+          <td>{{book.title}} </td>
+          <td> {{book['author']}} </td>
+          <td>{{book['rating']}} /10</td>
+          <td><a href="{{url_for('edit', id=book.id)}}">
           <button>Edit</button>
         </a>
-        <br>
+
         <a href="{{url_for('delete', id=book.id)}}">
           <button>Delete</button>
         </a>
-      </li>
-<!--      <input type="hidden">-->
-      {%endfor%}
-      {% endif %}
-    </ul>
+          </td>
+        </tr>
+            {%endfor%}
+      </table>
+{% endif %}
 
-    <a href="{{url_for('add')}}">Add New Book</a>
+
+
+<!--      <input type="hidden">-->
+
+
+
+    <a href="{{url_for('add')}}">
+      <button>Add New Book</button>
+    </a>
 
   </body>
 </html>
