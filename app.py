@@ -16,13 +16,13 @@ pip3 install -r requirements.txt
 
 This will install the packages from requirements.txt for this project.
 '''
-
+import os
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.environ.get('Flask_Key')
 class Base(DeclarativeBase):
   pass
 db=SQLAlchemy(model_class=Base)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///new_books_collection.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DB_URI", "sqlite:///new_books_collection.db")
 db.init_app(app)
 class Books(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
