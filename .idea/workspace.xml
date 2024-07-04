@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc310940-448d-4315-8d2a-422e5c9053a2" name="Changes" comment="fixed requirements.txt">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="cc310940-448d-4315-8d2a-422e5c9053a2" name="Changes" comment="Change requirements.txt">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,7 +42,7 @@
     "Python.app.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/purpl/PycharmProjects/bookshelf",
     "settings.editor.selected.configurable": "PyConsoleConfigurable.Python Console"
   }
@@ -141,8 +140,35 @@
       <option name="project" value="LOCAL" />
       <updated>1720039429024</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="fixed requirements.txt">
+      <option name="closed" value="true" />
+      <created>1720059160225</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1720059160225</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Change requirements.txt">
+      <option name="closed" value="true" />
+      <created>1720060621893</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1720060621894</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Library of books read" />
@@ -151,6 +177,7 @@
     <MESSAGE value="added git ignore files" />
     <MESSAGE value="Testing for web app" />
     <MESSAGE value="fixed requirements.txt" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed requirements.txt" />
+    <MESSAGE value="Change requirements.txt" />
+    <option name="LAST_COMMIT_MESSAGE" value="Change requirements.txt" />
   </component>
 </project>
