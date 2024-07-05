@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+{% from "bootstrap5/form.html" import render_form %} {% block content %} {%
+include "header.html" %}
+  <body>
+  <h1>Login</h1>
+  <h2>Notice!: At the moment only the administrator can add or edit book entries. </h2>
+  {{render_form(form)}}
+  </body>
+</html>
+{% endblock %}
