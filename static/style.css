@@ -48,3 +48,13 @@ th{
     text-transform: uppercase;
     background-color: var(--bs-purple);
 }
+
+.menu{
+    text-decoration: None;
+    color: var(--bs-dark-purple);
+    font-size: 20px
+
+}
+.disclaimer{
+    color: var(--bs-purple)
+}
