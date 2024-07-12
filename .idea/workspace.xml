@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc310940-448d-4315-8d2a-422e5c9053a2" name="Changes" comment="Added user login and registration in order to avoid unwanted users from changing info.">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_6_28_2024_12_12_PM_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_6_28_2024_12_12_PM__Changes_.xml" beforeDir="false" />
+    <list default="true" id="cc310940-448d-4315-8d2a-422e5c9053a2" name="Changes" comment="website was working because html files were not uploaded">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/instance/new_books_collection.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/header.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,7 +196,23 @@
       <option name="project" value="LOCAL" />
       <updated>1720218094400</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Added a new Log table to keep track of the logs to the book entries">
+      <option name="closed" value="true" />
+      <created>1720319843867</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1720319843867</updated>
+    </task>
+    <task id="LOCAL-00017" summary="website was working because html files were not uploaded">
+      <option name="closed" value="true" />
+      <created>1720820775175</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1720820775176</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -239,6 +247,8 @@
     <MESSAGE value="fixed requirements.txt" />
     <MESSAGE value="Change requirements.txt" />
     <MESSAGE value="Added user login and registration in order to avoid unwanted users from changing info." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added user login and registration in order to avoid unwanted users from changing info." />
+    <MESSAGE value="Added a new Log table to keep track of the logs to the book entries" />
+    <MESSAGE value="website was working because html files were not uploaded" />
+    <option name="LAST_COMMIT_MESSAGE" value="website was working because html files were not uploaded" />
   </component>
 </project>
