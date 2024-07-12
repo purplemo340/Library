@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+{% from "bootstrap5/form.html" import render_form %} {% block content %}
+{% include "header.html" %}
+  <body>
+   <h1>Book Logs</h1>
+  <ul>
+    {% for logs in all_logs %}
+    <li>{{logs.log}}: {{logs.date}}</li>
+  {% endfor %}
+</ul>
+  <a href="{{url_for('post_log', book_id=book_id)}}">Add Log</a>
+  </body>
+</html>
+{% endblock %}
