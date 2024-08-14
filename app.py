@@ -42,21 +42,6 @@ def admin_only(f):
 
 class Base(DeclarativeBase):
   pass
-import boto3
-
-dynamodb = boto3.client('dynamodb')
-
-dynamodb.put_item(
-    TableName='Books',
-    Item={
-        'pk': {'N': '1'},
-        'name': {'S': 'Book'},
-        'author': {'S': 'author'},
-        'date': {'S': 'author'},
-        'read': {'B': 'true'}
-    }
-)
-
 
 db = SQLAlchemy(model_class=Base)
 
