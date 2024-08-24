@@ -50,7 +50,8 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 
 data = os.getenv('Database_URL')
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DB_URI", data)
+app.config["SQLALCHEMY_DATABASE_URI"] = data
+
 db.init_app(app)
 
 
