@@ -16,13 +16,16 @@ from flask_ckeditor import CKEditor
 from flask_ckeditor import CKEditorField
 from datetime import datetime
 import os
+import psycopg2
 
+import sys
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('Flask_Key')
 Bootstrap5(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+
 
 
 @login_manager.user_loader
@@ -46,8 +49,8 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
-
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DB_URI", "sqlite:///new_books_collection.db")
+data = os.getenv('Database_URL')
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DB_URI", data)
 db.init_app(app)
 
 
@@ -108,8 +111,11 @@ with app.app_context():
 @app.route('/', methods=["GET"])
 def home():
     with app.app_context():
+        #cursor= conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
         result = db.session.execute(db.select(Books).order_by(Books.title))
-        all_books = list(result.scalars())
+
+
+        all_books = result.scalars()
         return render_template("index.html", shelf=all_books)
 
 
