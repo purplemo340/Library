@@ -21,7 +21,7 @@ import psycopg2
 import sys
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('Flask_Key')
+app.config['SECRET_KEY'] = 'secret'#os.environ.get('Flask_Key')
 Bootstrap5(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -100,7 +100,7 @@ class Logs(db.Model):
     __tablename__ = "book_logs"
     id: Mapped[int] = mapped_column(primary_key=True)
     log: Mapped[str] = mapped_column(Text, nullable=False)
-    date: Mapped[str] = mapped_column(String(250), nullable=False)
+    date_created: Mapped[str] = mapped_column(String(250), nullable=False)
     book_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("bookshelves.id"))
     book_log = relationship("Books", back_populates="books")
 
@@ -130,7 +130,9 @@ def add():
                 title=request.form['name'],
                 author=request.form['author'],
                 rating=request.form['rating'],
-                complete=request.form['status'])
+                complete=request.form['status'],
+                id=db.session.query(Books.id).count() + 1
+            )
             db.session.add(book1)
             db.session.commit()
             return redirect(url_for('home'))
@@ -217,7 +219,8 @@ def register():
             secure = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256', salt_length=8)
             new_user = User(
                 password=secure,
-                name=request.form.get('name')
+                name=request.form.get('name'),
+                id=db.session.query(User.id).count()+1
             )
             db.session.add(new_user)
             db.session.commit()
@@ -236,7 +239,8 @@ def post_log(book_id):
         new_log = Logs(
             log=form.log.data,
             book_log=book,
-            date=datetime.now().strftime('%b. %d, %Y  %I:%M:%S%p')
+            date=datetime.now().strftime('%b. %d, %Y  %I:%M:%S%p'),
+            id=db.session.query(Logs.id).count() + 1
         )
         db.session.add(new_log)
         db.session.commit()

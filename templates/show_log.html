@@ -6,7 +6,7 @@
    <h1>Book Logs</h1>
   <ul>
     {% for logs in all_logs %}
-    <li>{{logs.log}}: {{logs.date}}</li>
+    <li>{{logs.log}}: {{logs.date_created}}</li>
   {% endfor %}
 </ul>
   <a href="{{url_for('post_log', book_id=book_id)}}">Add Log</a>
