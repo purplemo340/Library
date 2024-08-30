@@ -78,6 +78,11 @@ class BookForm(FlaskForm):
     rating = StringField("Rating", validators=[DataRequired()])
     status = StringField("Finished?", validators=[DataRequired()])
     submit = SubmitField("Add Book")
+class CommentForm(FlaskForm):
+    name = StringField("Book Name", validators=[DataRequired()])
+    author = StringField("Author", validators=[DataRequired()])
+    comment = CKEditorField("Thoughts?", validators=[DataRequired()])
+    submit = SubmitField("Add Comment")
 
 class Books(db.Model):
     __tablename__ = "bookshelves"
@@ -86,14 +91,28 @@ class Books(db.Model):
     author: Mapped[str] = mapped_column(String(250), nullable=False)
     rating: Mapped[float] = mapped_column(Float, nullable=False)
     complete: Mapped[str] = mapped_column(String(250), nullable=False)
-    books: Mapped[List["Logs"]] = relationship(back_populates="book_log")
+    #book to logs
+    logs: Mapped[List["Logs"]] = relationship(back_populates="book")
+    #user to books
+    user_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("readers.id"))
+    #user_name: Mapped[str] = mapped_column(String, db.ForeignKey("readers.name"))
 
+    reader = relationship("User", back_populates="books")
+    #readers: Mapped[List["User"]] = relationship(back_populates="readers")
+    #user_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("readers.id"))
 
 class User(UserMixin, db.Model):
     __tablename__ = "readers"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     password: Mapped[str] = mapped_column(String(100))
     name: Mapped[str] = mapped_column(String(1000))
+    #user to logs
+    logs: Mapped[List["Logs"]] = relationship(back_populates="reader")
+    #book to logs
+    books: Mapped[List["Books"]] = relationship(back_populates="reader")
+
+    comments:  Mapped[List["Comments"]] = relationship(back_populates="reader")
+
 
 
 class Logs(db.Model):
@@ -101,8 +120,26 @@ class Logs(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     log: Mapped[str] = mapped_column(Text, nullable=False)
     date_created: Mapped[str] = mapped_column(String(250), nullable=False)
+    #book to logs
     book_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("bookshelves.id"))
-    book_log = relationship("Books", back_populates="books")
+    book = relationship("Books", back_populates="logs")
+    # user to logs
+    user_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("readers.id"))
+    reader = relationship("User", back_populates="logs")
+
+class Comments(db.Model):
+    __tablename__ = "comments"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    comment_text: Mapped[str] = mapped_column(Text, nullable=False)
+    date_created: Mapped[int] = mapped_column(String(250), nullable=False)
+    username: Mapped[int] = mapped_column(String, db.ForeignKey("readers.name"))
+    reader = relationship("User", back_populates="comments")
+
+#     title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
+#     author: Mapped[str] = mapped_column(String(250), nullable=False)
+#     comment: Mapped[str] = mapped_column(String(250), nullable=False)
+#     books: Mapped[List["Logs"]] = relationship(back_populates="book_log")
+#     reader: Mapped[List["User"]] = relationship(back_populates="readers")
 
 
 with app.app_context():
@@ -113,15 +150,25 @@ with app.app_context():
 def home():
     with app.app_context():
         #cursor= conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
-        result = db.session.execute(db.select(Books).order_by(Books.title))
+        result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id==2))
 
 
         all_books = result.scalars()
         return render_template("index.html", shelf=all_books)
 
 
+@app.route('/<int:user>', methods=["GET"])
+def show_books(user):
+    with app.app_context():
+        result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id == user))
+        all_books = result.scalars()
+        print(result)
+
+        return render_template("books.html", shelf=all_books)
+
+
 @app.route("/add", methods=["POST", "GET"])
-@admin_only
+@login_required
 def add():
     form=BookForm()
     if request.method == "POST":
@@ -131,7 +178,8 @@ def add():
                 author=request.form['author'],
                 rating=request.form['rating'],
                 complete=request.form['status'],
-                id=db.session.query(Books.id).count() + 1
+                id=db.session.query(Books.id).count() + 1,
+                user_id=current_user.id
             )
             db.session.add(book1)
             db.session.commit()
@@ -141,7 +189,7 @@ def add():
 
 
 @app.route('/edit', methods=["POST", "GET"])
-@admin_only
+@login_required
 def edit():
     if request.method == "POST":
         new_book = request.form['new_name']
@@ -176,7 +224,7 @@ def edit():
 
 
 @app.route('/delete')
-@admin_only
+@login_required
 def delete():
     with app.app_context():
         book_id = request.args.get('id')
@@ -196,7 +244,13 @@ def login():
         user = db.session.execute(db.select(User).where(User.name == name)).scalar()
         if user and check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for('home'))
+            if user =='admin':
+                return redirect(url_for('home'))
+            else:
+                print(user.id)
+
+                return redirect(url_for('show_books', user=user.id))
+
     return render_template("login.html", form=l_form)
 
 
@@ -230,7 +284,6 @@ def register():
 
 @app.route('/log/<int:book_id>', methods=["POST", "GET"])
 @login_required
-@admin_only
 def post_log(book_id):
     form = LogForm()
     result = db.session.execute(db.select(Books).where(Books.id == book_id))
@@ -238,9 +291,10 @@ def post_log(book_id):
     if form.validate_on_submit():
         new_log = Logs(
             log=form.log.data,
-            book_log=book,
+            book=book,
             date=datetime.now().strftime('%b. %d, %Y  %I:%M:%S%p'),
-            id=db.session.query(Logs.id).count() + 1
+            id=db.session.query(Logs.id).count() + 1,
+            user_id=current_user.id
         )
         db.session.add(new_log)
         db.session.commit()
@@ -253,6 +307,26 @@ def show_log(book_id):
     result = db.session.execute(db.select(Logs).where(Logs.book_id == book_id))
     logs = result.scalars().all()
     return render_template('show_log.html', all_logs=logs, book_id=book_id)
+
+
+@app.route('/comment/<int:book_id>', methods=["POST", "GET"])
+@admin_only
+def comment(book_id):
+    form = CommentForm()
+    if request.method == "POST":
+        with app.app_context():
+            book1 = Books(
+                title=request.form['name'],
+                author=request.form['author'],
+                rating=request.form['rating'],
+                complete=request.form['status'],
+                id=db.session.query(Books.id).count() + 1,
+                user_id=current_user.id
+            )
+            db.session.add(book1)
+            db.session.commit()
+            return redirect(url_for('home'))
+    return render_template("add_comment.html", form=form)
 
 
 if __name__ == "__main__":
