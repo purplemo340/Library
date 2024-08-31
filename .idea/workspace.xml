@@ -4,14 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc310940-448d-4315-8d2a-422e5c9053a2" name="Changes" comment="aws failed">
-      <change afterPath="$PROJECT_DIR$/templates/add_comment.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/books.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/script.js" afterDir="false" />
+    <list default="true" id="cc310940-448d-4315-8d2a-422e5c9053a2" name="Changes" comment="Database hosted on raspberry pi and connected the user table to the books and logs tables">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/books.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/books.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/header.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/log.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/log.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/show_log.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/show_log.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -251,7 +251,15 @@
       <option name="project" value="LOCAL" />
       <updated>1723607651319</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Database hosted on raspberry pi and connected the user table to the books and logs tables">
+      <option name="closed" value="true" />
+      <created>1725056258520</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1725056258520</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -290,6 +298,7 @@
     <MESSAGE value="website was working because html files were not uploaded" />
     <MESSAGE value="trying to use aws" />
     <MESSAGE value="aws failed" />
-    <option name="LAST_COMMIT_MESSAGE" value="aws failed" />
+    <MESSAGE value="Database hosted on raspberry pi and connected the user table to the books and logs tables" />
+    <option name="LAST_COMMIT_MESSAGE" value="Database hosted on raspberry pi and connected the user table to the books and logs tables" />
   </component>
 </project>

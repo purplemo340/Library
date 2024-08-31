@@ -79,8 +79,8 @@ class BookForm(FlaskForm):
     status = StringField("Finished?", validators=[DataRequired()])
     submit = SubmitField("Add Book")
 class CommentForm(FlaskForm):
-    name = StringField("Book Name", validators=[DataRequired()])
-    author = StringField("Author", validators=[DataRequired()])
+    #name = StringField("Book Name", validators=[DataRequired()])
+    #author = StringField("Author", validators=[DataRequired()])
     comment = CKEditorField("Thoughts?", validators=[DataRequired()])
     submit = SubmitField("Add Comment")
 
@@ -101,6 +101,7 @@ class Books(db.Model):
     #readers: Mapped[List["User"]] = relationship(back_populates="readers")
     #user_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("readers.id"))
 
+    comments: Mapped[List["Comments"]] = relationship(back_populates="book")
 class User(UserMixin, db.Model):
     __tablename__ = "readers"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -134,6 +135,9 @@ class Comments(db.Model):
     date_created: Mapped[int] = mapped_column(String(250), nullable=False)
     username: Mapped[int] = mapped_column(String, db.ForeignKey("readers.name"))
     reader = relationship("User", back_populates="comments")
+
+    book_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("bookshelves.id"))
+    book = relationship("Books", back_populates="comments")
 
 #     title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
 #     author: Mapped[str] = mapped_column(String(250), nullable=False)
@@ -288,45 +292,53 @@ def post_log(book_id):
     form = LogForm()
     result = db.session.execute(db.select(Books).where(Books.id == book_id))
     book = result.scalar()
+
     if form.validate_on_submit():
         new_log = Logs(
             log=form.log.data,
             book=book,
-            date=datetime.now().strftime('%b. %d, %Y  %I:%M:%S%p'),
+            date_created=datetime.now().strftime('%b. %d, %Y  %I:%M:%S%p'),
             id=db.session.query(Logs.id).count() + 1,
             user_id=current_user.id
         )
         db.session.add(new_log)
         db.session.commit()
         return redirect(url_for('show_log', book_id=book_id))
-    return render_template('log.html', form=form, book_id=book_id)
+    return render_template('log.html', form=form, book_id=book_id, book_name=book)
 
 
 @app.route('/show_log/<int:book_id>', methods=["POST", "GET"])
 def show_log(book_id):
     result = db.session.execute(db.select(Logs).where(Logs.book_id == book_id))
     logs = result.scalars().all()
-    return render_template('show_log.html', all_logs=logs, book_id=book_id)
+    result1 = db.session.execute(db.select(Comments).where(Comments.book_id == book_id))
+    comments = result1.scalars().all()
+    result2 = db.session.execute(db.select(Books).where(Books.id == book_id))
+    book = result2.scalar()
+
+    return render_template('show_log.html', all_logs=logs, book_id=book_id, comments=comments, book=book)
 
 
 @app.route('/comment/<int:book_id>', methods=["POST", "GET"])
-@admin_only
 def comment(book_id):
     form = CommentForm()
+    result = db.session.execute(db.select(Books).where(Books.id == book_id))
+    book = result.scalar()
+
     if request.method == "POST":
         with app.app_context():
-            book1 = Books(
-                title=request.form['name'],
-                author=request.form['author'],
-                rating=request.form['rating'],
-                complete=request.form['status'],
-                id=db.session.query(Books.id).count() + 1,
-                user_id=current_user.id
+            comment1 = Comments(
+                comment_text = form.comment.data,
+                date_created= datetime.now().strftime('%b. %d, %Y  %I:%M %p'),
+                username= current_user.name,
+                book_id= book_id,
+                id=db.session.query(Comments.id).count() + 1
             )
-            db.session.add(book1)
+            db.session.add(comment1)
             db.session.commit()
             return redirect(url_for('home'))
-    return render_template("add_comment.html", form=form)
+
+    return render_template("add_comment.html", form=form, book=book)
 
 
 if __name__ == "__main__":

@@ -58,3 +58,15 @@ th{
 .disclaimer{
     color: var(--bs-purple)
 }
+.log{
+    border: dotted;
+    width: 30%;
+
+
+}
+.comment{
+    display:none;
+}
+.no{
+    list-style-type: none;
+}

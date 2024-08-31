@@ -3,7 +3,7 @@
 {% from "bootstrap5/form.html" import render_form %} {% block content %} {%
 include "header.html" %}
   <body>
-  <h1>Book Logs</h1>
+  <h1>Book Log for {{book_name.title}}</h1>
     {{render_form(form)}}
   </body>
 </html>

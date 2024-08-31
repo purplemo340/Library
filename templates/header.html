@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>My Library</title>
-    <link href="static/style.css" rel="stylesheet"/>
+    <link href="/static/style.css" rel="stylesheet"/>
 </head>
 <header class="masthead" style="background-image: url('../static/chris-lawton-zvKx6ixUhWQ-unsplash.jpg')">
 
@@ -15,7 +15,10 @@
 <body>
 <br>
     <div class="menu">
-        <a class="menu" href="{{url_for('home')}}">Home/ </a><a class="menu" href="{{url_for('login')}}">Login/ </a><a class="menu" href="{{url_for('logout')}}">Logout/ </a><a class="menu" href="{{url_for('register')}}">Register</a>
+        <a class="menu" href="{{url_for('home')}}">Home/ </a><a class="menu" href="{{url_for('login')}}">Login/ </a><a class="menu" href="{{url_for('logout')}}">Logout/ </a><a class="menu" href="{{url_for('register')}}">Register/</a>
+        {%if current_user.is_authenticated%}
+        <a class="menu" href="{{url_for('show_books', user=current_user.id)}}">Personal Library</a>
+        {% endif %}
     </div>
 </body>
 </html>
