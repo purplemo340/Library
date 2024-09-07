@@ -59,14 +59,19 @@ th{
     color: var(--bs-purple)
 }
 .log{
-    border: dotted;
+    border: solid;
     width: 30%;
-
-
+    background-color: var(--bs-corn-yellow);
+    margin: 20px;
+    float: left;
 }
 .comment{
     display:none;
 }
 .no{
     list-style-type: none;
+}
+button{
+margin:10px;
+float: right
 }

@@ -10,13 +10,14 @@ include "header.html" %}
    </div>
   <ul class="no">
     {% for logs in all_logs: %}
-    <li> <h3 class="log">{{logs.log}}: {{logs.date_created}}</h3></li>
+    <li class="log"> <h3>{{logs.log}} </h3><h3>-{{logs.date_created}}</h3></li>
 
 
 
   {% endfor %}
 
 </ul>
+   <br>
   <a href="{{url_for('post_log', book_id=book_id)}}"><button>Add Log</button></a>
 
 
