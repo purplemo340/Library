@@ -3,11 +3,18 @@
 include "header.html" %}
 <html>
   <body>
-   <h1>Book Logs </h1>
+   <h1 class="log_header">Book Logs </h1>
    <div class="info">
        <h2>{{book.title}} by</h2>
        <h2>{{book.author}}</h2>
+
+
    </div>
+   <div class="book_img">
+    <img  src="https://covers.openlibrary.org/b/olid/{{book.isbn}}-M.jpg">
+   </div>
+   <br>
+   <div class="logs">
   <ul class="no">
     {% for logs in all_logs: %}
     <li class="log"> <h3>{{logs.log}} </h3><h3>-{{logs.date_created}}</h3></li>
@@ -17,7 +24,9 @@ include "header.html" %}
   {% endfor %}
 
 </ul>
+   </div>
    <br>
+   <div class="buttons">
   <a href="{{url_for('post_log', book_id=book_id)}}"><button>Add Log</button></a>
 
 
@@ -26,14 +35,17 @@ include "header.html" %}
     <ul >
       {% for comment in comments: %}
       <li>{{comment.comment_text}}</li>
-      <p>-{{current_user.name}}</p>
+      <p>-{{comment.username}}</p>
 
     {% endfor %}
 
-        <a href="{{url_for('comment', book_id=book_id)}}"><button>Add Comment</button></a>
+
       </ul>
     </div>
+
+   <a href="{{url_for('comment', book_id=book_id)}}"><button>Add Comment</button></a>
     <button class="view" onclick="comment()">View Comments</button>
+       </div>
 
 <script>
     var list=document.getElementsByClassName("comment")[0];

@@ -91,6 +91,7 @@ class Books(db.Model):
     author: Mapped[str] = mapped_column(String(250), nullable=False)
     rating: Mapped[float] = mapped_column(Float, nullable=False)
     complete: Mapped[str] = mapped_column(String(250), nullable=False)
+    isbn: Mapped[str] = mapped_column(String(250), nullable=False)
     #book to logs
     logs: Mapped[List["Logs"]] = relationship(back_populates="book")
     #user to books

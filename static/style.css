@@ -71,7 +71,30 @@ th{
 .no{
     list-style-type: none;
 }
+.book_img{
+
+width:100%
+display:block;
+margin:auto;
+text-align:center;
+padding:10px
+}
+.info{
+float:left;
+width:100%;
+text-align:center;
+}
+.log_header{
+text-align:center;
+}
+.buttons{
+width:50%
+float:left;
+}
 button{
 margin:10px;
 float: right
+}
+.logs::after{
+margin:20%;
 }
