@@ -2,7 +2,7 @@
 --bs-purple:#86534f;
 --bs-beige: #ccb495;
 --bs-dark-purple: #594249;
---bs-brown: #aa735c
+--bs-brown: #aa735c;
 --bs-dark-brown: #664139;
 --bs-corn-yellow: #dd935e;
 --bs-light-yellow: #dd935e;
@@ -73,8 +73,8 @@ th{
 }
 .book_img{
 
-width:100%
-display:block;
+width:100%;
+display: block;
 margin:auto;
 text-align:center;
 padding:10px
@@ -88,7 +88,7 @@ text-align:center;
 text-align:center;
 }
 .buttons{
-width:50%
+width:50%;
 float:left;
 }
 button{
@@ -98,3 +98,34 @@ float: right
 .logs::after{
 margin:20%;
 }
+
+.more_than_50{
+    background-color: var(--bs-purple);
+}
+
+.twenty_to_fifty{
+    background-color: var(--bs-brown);
+}
+
+.ten_to_twenty{
+    background-color: var(--bs-dark-purple);
+}
+
+.one_to_ten{
+    background-color: var(--bs-dust-blue);
+}
+.zero{
+    background-color: var(--bs-corn-yellow);
+}
+
+.col{
+    width: 10px;
+    float: left;
+    padding: 1px;
+    
+}
+.test{
+    min-width: 10px;
+    background-color: var(--bs-dust-blue);
+}
+

@@ -18,7 +18,34 @@ from datetime import datetime
 import os
 import psycopg2
 
+
 import sys
+
+# bot.py
+import os
+
+import discord
+from dotenv import load_dotenv
+
+load_dotenv()
+TOKEN = os.getenv('DISCORD_TOKEN')
+GUILD = os.getenv('DISCORD_GUILD')
+intents=discord.Intents.default()
+
+intents.message_content = True
+client = discord.Client(intents=intents)
+
+@client.event
+async def on_ready():
+    for guild in client.guilds:
+        if guild.name == GUILD:
+            break
+
+    print(
+        f'{client.user} is connected to the following guild:\n'
+        f'{guild.name}(id: {guild.id})'
+    )
+###########################################
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'#os.environ.get('Flask_Key')
@@ -50,7 +77,7 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 
 data = os.getenv('Database_URL')
-app.config["SQLALCHEMY_DATABASE_URI"] = data
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://medmead:Murasaki2019!@172.84.198.133/exampledb'
 
 db.init_app(app)
 
@@ -83,7 +110,9 @@ class CommentForm(FlaskForm):
     #author = StringField("Author", validators=[DataRequired()])
     comment = CKEditorField("Thoughts?", validators=[DataRequired()])
     submit = SubmitField("Add Comment")
-
+class PageForm(FlaskForm):
+    pages= StringField('Pages Read')
+    submit = SubmitField("Add")
 class Books(db.Model):
     __tablename__ = "bookshelves"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -147,10 +176,44 @@ class Comments(db.Model):
 #     reader: Mapped[List["User"]] = relationship(back_populates="readers")
 
 
+class Pages(db.Model):
+    __tablename__ = "Pages_2025"
+    Jan: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    Feb: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    Mar: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    Apr: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    May: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    Jun: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    Jul: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    Aug: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    Sep: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    Oct: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    Nov: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    Dec: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
 with app.app_context():
     db.create_all()
 
-
+####################################
+@client.event
+async def on_message(message):
+    
+    print(message.content)
+    if message.author == client.user:
+        return
+    if message.content=='pages!':
+        response = 'How many pages have you read today?'
+        await message.channel.send(response)
+    elif int(message.content)>0:
+        with app.app_context():
+            day=int(datetime.now().strftime('%d'))
+            value_update = db.session.execute(db.select(Pages).where(Pages.id == day)).scalar()
+            value_update.Jan = int(message.content)
+            db.session.commit()
+            response = 'Good job! Keep it up!'
+            await message.channel.send(response)
+client.run(TOKEN)
+###############################################
 @app.route('/', methods=["GET"])
 def home():
     with app.app_context():
@@ -341,7 +404,34 @@ def comment(book_id):
 
     return render_template("add_comment.html", form=form, book=book)
 
-
+#graph
+@app.route('/graph', methods=["POST", "GET"])
+def graph():
+    data=False
+    day=int(datetime.now().strftime('%d'))
+    month=(datetime.now().strftime('%b'))
+    print(type(datetime.now().strftime('%d')))
+    form=PageForm()
+    result = db.session.execute(db.select(Pages).order_by(Pages.id))
+    pages = result.scalars()
+    arr=[]
+    
+    months=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    result1 = db.session.execute(db.select(Pages).order_by(Pages.id))
+    for x in result1.scalars():
+        for m in x:
+            print(m)
+    if request.method=="POST":
+        new_value = form.pages.data
+        old_value = day
+        print(day)
+        with app.app_context():
+            value_update = db.session.execute(db.select(Pages).where(Pages.id == day)).scalar()
+            value_update.Jan = new_value
+            print(value_update.Jan)
+            db.session.commit()
+            return redirect(url_for('home'))
+    return render_template("graph.html", months=months, form=form, day=day, month=month, pages=pages, arr=arr)
 if __name__ == "__main__":
     app.run(debug=True)
 
