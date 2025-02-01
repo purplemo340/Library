@@ -201,21 +201,41 @@ async def on_message(message):
     print(message.content)
     if message.author == client.user:
         return
-    if int(message.content)!=message.content and message.content=='pages!':
+    if message.content=='pages!':
         response = 'How many pages have you read today?'
         await message.channel.send(response)
-    elif int(message.content)>0:
+        
+    elif message.content.isnumeric():
         with app.app_context():
             day=int(datetime.now().strftime('%d'))
             value_update = db.session.execute(db.select(Pages).where(Pages.id == day)).scalar()
-            value_update.Jan = int(message.content)
+            try:
+                value_update.Jan = int(message.content)
+            except ValueError:
+                print("try again")
+
             db.session.commit()
             response = 'Good job! Keep it up!'
             await message.channel.send(response)
-    elif int(message.content)!=message.content and message.content=="log!":
+    elif message.content=='show!':
+        with app.app_context():
+            result = db.session.execute(db.select(Books.title).order_by(Books.title).where(Books.user_id==2))
+            all_books = result.scalars()
+            hi=""
+            for book in all_books:
+                id = db.session.execute(db.select(Books.id).where(Books.user_id==2, Books.title==book))
+                id=id.scalar()
+                hi=hi + str(id) + ": "+book+ '\n'
+                
+            response=hi
+            await message.channel.send(response)
+        
+    elif message.content=="log!":
         response="Start message with \'log:\'"
         await message.channel.send(response)
-        if message.content.startswith('log:'):
+    elif message.content.startswith('log:'):
+            print(message.content[4:])
+            
             print("hi")
 client.run(TOKEN)
 
