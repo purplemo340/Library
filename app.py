@@ -48,7 +48,7 @@ async def on_ready():
 ###########################################
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret'#os.environ.get('Flask_Key')
+app.config['SECRET_KEY'] = os.environ.get('Flask_Key')
 Bootstrap5(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -77,7 +77,7 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 
 data = os.getenv('Database_URL')
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://medmead:Murasaki2019!@172.84.198.133/exampledb'
+app.config["SQLALCHEMY_DATABASE_URI"] = data
 
 db.init_app(app)
 
@@ -201,7 +201,7 @@ async def on_message(message):
     print(message.content)
     if message.author == client.user:
         return
-    if message.content=='pages!':
+    if int(message.content)!=message.content and message.content=='pages!':
         response = 'How many pages have you read today?'
         await message.channel.send(response)
     elif int(message.content)>0:
@@ -212,7 +212,13 @@ async def on_message(message):
             db.session.commit()
             response = 'Good job! Keep it up!'
             await message.channel.send(response)
+    elif int(message.content)!=message.content and message.content=="log!":
+        response="Start message with \'log:\'"
+        await message.channel.send(response)
+        if message.content.startswith('log:'):
+            print("hi")
 client.run(TOKEN)
+
 ###############################################
 @app.route('/', methods=["GET"])
 def home():
@@ -417,6 +423,10 @@ def graph():
     arr=[]
     
     months=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    m=[value_update.Jan, value_update.Feb, value_update.Mar, value_update.Apr, value_update.May,
+        value_update.Jun, value_update.Jul, value_update.Aug, value_update.Sep, value_update.Oct,
+        value_update.Nov, value_update.Dec]
+    
     result1 = db.session.execute(db.select(Pages).order_by(Pages.id))
     for x in result1.scalars():
         for m in x:
