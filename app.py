@@ -150,7 +150,32 @@ class Comments(db.Model):
 with app.app_context():
     db.create_all()
 
+####################################
+@client.event
+async def on_message(message):
+    
+    print(message.content)
+    if message.author == client.user:
+        return
+    if int(message.content)!=message.content and message.content=='pages!':
+        response = 'How many pages have you read today?'
+        await message.channel.send(response)
+    elif int(message.content)>0:
+        with app.app_context():
+            day=int(datetime.now().strftime('%d'))
+            value_update = db.session.execute(db.select(Pages).where(Pages.id == day)).scalar()
+            value_update.Jan = int(message.content)
+            db.session.commit()
+            response = 'Good job! Keep it up!'
+            await message.channel.send(response)
+    elif int(message.content)!=message.content and message.content=="log!":
+        response="Start message with \'log:\'"
+        await message.channel.send(response)
+        if message.content.startswith('log:'):
+            print("hi")
+client.run(TOKEN)
 
+###############################################
 @app.route('/', methods=["GET"])
 def home():
     with app.app_context():
