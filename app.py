@@ -453,6 +453,7 @@ def graph():
     data=False
     day=int(datetime.now().strftime('%d'))
     month=(datetime.now().strftime('%b'))
+    month_num=(datetime.now().strftime('%m'))
     print(type(datetime.now().strftime('%d')))
     form=PageForm()
     result = db.session.execute(db.select(Pages).order_by(Pages.id))
@@ -474,7 +475,7 @@ def graph():
         print(day)
         with app.app_context():
             value_update = db.session.execute(db.select(Pages).where(Pages.id == day)).scalar()
-            value_update.Jan = new_value
+            m[month_num-1] = new_value
             print(value_update.Jan)
             db.session.commit()
             return redirect(url_for('home'))
