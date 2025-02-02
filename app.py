@@ -204,19 +204,22 @@ async def on_message(message):
     if message.content=='pages!':
         response = 'How many pages have you read today?'
         await message.channel.send(response)
+        def check(m):
+            if message.content.isnumeric():
+                print('hi')
+                with app.app_context():
+                    day=int(datetime.now().strftime('%d'))
+                    value_update = db.session.execute(db.select(Pages).where(Pages.id == day)).scalar()
+                    value_update.Feb=int(message.content)
+                    db.session.commit()
+            return m.channel==message.channel
+        msg=await client.wait_for('message', check=check)
+        response = 'Good job! Keep it up!'
+        await message.channel.send(response)
         
-    elif message.content.isnumeric():
-        with app.app_context():
-            day=int(datetime.now().strftime('%d'))
-            value_update = db.session.execute(db.select(Pages).where(Pages.id == day)).scalar()
-            try:
-                value_update.Jan = int(message.content)
-            except ValueError:
-                print("try again")
-
-            db.session.commit()
-            response = 'Good job! Keep it up!'
-            await message.channel.send(response)
+    
+        
+            
     elif message.content=='show!':
         with app.app_context():
             result = db.session.execute(db.select(Books.title).order_by(Books.title).where(Books.user_id==2))
@@ -231,12 +234,26 @@ async def on_message(message):
             await message.channel.send(response)
         
     elif message.content=="log!":
-        response="Start message with \'log:\'"
+        response="What book would you like to log. Use book index and Start message with \'log:\'"
         await message.channel.send(response)
     elif message.content.startswith('log:'):
-            print(message.content[4:])
+            book=message.content[4:]
+            if book.isnumeric():
+                with app.app_context():
+                    result = db.session.execute(db.select(Books.title).order_by(Books.title).where(Books.user_id==2, Books.id==book))
+                    response="Do you want to create a log for this book?: "+result.scalar()
+                    await message.channel.send(response)
+                    
+                    def check(m):
+                        return m.channel==message.channel
+                    msg=await client.wait_for('message', check=check)
+                    await message.channel.send(msg.author)
+    elif message.content=="log: yes":
+        response="Start log with log message:"
+        await message.channel.send(response)
+   
+
             
-            print("hi")
 client.run(TOKEN)
 
 ###############################################
