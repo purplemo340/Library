@@ -28,27 +28,10 @@ import discord
 from dotenv import load_dotenv
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
-intents=discord.Intents.default()
 
-intents.message_content = True
-client = discord.Client(intents=intents)
-
-@client.event
-async def on_ready():
-    for guild in client.guilds:
-        if guild.name == GUILD:
-            break
-
-    print(
-        f'{client.user} is connected to the following guild:\n'
-        f'{guild.name}(id: {guild.id})'
-    )
-###########################################
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('Flask_Key')
+app.config['SECRET_KEY'] = os.getenv('Flask_Key')
 Bootstrap5(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -194,71 +177,9 @@ class Pages(db.Model):
 with app.app_context():
     db.create_all()
 
-####################################
-@client.event
-async def on_message(message):
-    
-    print(message.content)
-    if message.author == client.user:
-        return
-    if message.content=='pages!':
-        response = 'How many pages have you read today?'
-        await message.channel.send(response)
-        def check(m):
-            if message.content.isnumeric():
-                print('hi')
-                with app.app_context():
-                    day=int(datetime.now().strftime('%d'))
-                    value_update = db.session.execute(db.select(Pages).where(Pages.id == day)).scalar()
-                    value_update.Feb=int(message.content)
-                    db.session.commit()
-            return m.channel==message.channel
-        msg=await client.wait_for('message', check=check)
-        response = 'Good job! Keep it up!'
-        await message.channel.send(response)
-        
-    
-        
-            
-    elif message.content=='show!':
-        with app.app_context():
-            result = db.session.execute(db.select(Books.title).order_by(Books.title).where(Books.user_id==2))
-            all_books = result.scalars()
-            hi=""
-            for book in all_books:
-                id = db.session.execute(db.select(Books.id).where(Books.user_id==2, Books.title==book))
-                id=id.scalar()
-                hi=hi + str(id) + ": "+book+ '\n'
-                
-            response=hi
-            await message.channel.send(response)
-        
-    elif message.content=="log!":
-        response="What book would you like to log. Use book index and Start message with \'log:\'"
-        await message.channel.send(response)
-    elif message.content.startswith('log:'):
-            book=message.content[4:]
-            if book.isnumeric():
-                with app.app_context():
-                    result = db.session.execute(db.select(Books.title).order_by(Books.title).where(Books.user_id==2, Books.id==book))
-                    response="Do you want to create a log for this book?: "+result.scalar()
-                    await message.channel.send(response)
-                    
-                    def check(m):
-                        return m.channel==message.channel
-                    msg=await client.wait_for('message', check=check)
-                    await message.channel.send(msg.author)
-    elif message.content=="log: yes":
-        response="Start log with log message:"
-        await message.channel.send(response)
-   
-
-            
-client.run(TOKEN)
-
-###############################################
 @app.route('/', methods=["GET"])
 def home():
+    
     with app.app_context():
         #cursor= conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
         result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id==2))
