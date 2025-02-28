@@ -17,7 +17,6 @@ from flask_ckeditor import CKEditorField
 from datetime import datetime
 import os
 import psycopg2
-
 import sys
 
 app = Flask(__name__)
@@ -54,7 +53,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = data
 
 db.init_app(app)
 
-
+#forms displayed to users
 class LoginForm(FlaskForm):
     name = StringField("Username", validators=[DataRequired()])
     password=PasswordField("Password", validators=[DataRequired()])
@@ -151,71 +150,45 @@ with app.app_context():
     db.create_all()
 
 ####################################
-@client.event
-async def on_message(message):
-    
-    print(message.content)
-    if message.author == client.user:
-        return
-    if int(message.content)!=message.content and message.content=='pages!':
-        response = 'How many pages have you read today?'
-        await message.channel.send(response)
-    elif int(message.content)>0:
-        with app.app_context():
-            day=int(datetime.now().strftime('%d'))
-            value_update = db.session.execute(db.select(Pages).where(Pages.id == day)).scalar()
-            value_update.Jan = int(message.content)
-            db.session.commit()
-            response = 'Good job! Keep it up!'
-            await message.channel.send(response)
-    elif int(message.content)!=message.content and message.content=="log!":
-        response="Start message with \'log:\'"
-        await message.channel.send(response)
-        if message.content.startswith('log:'):
-            print("hi")
-client.run(TOKEN)
+#Pages rendered
 
-###############################################
+#Home Page displays the list of books that I read
 @app.route('/', methods=["GET"])
 def home():
     with app.app_context():
-        #cursor= conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
-        result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id==2))
-
-
+        result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id==2)) #sql query
         all_books = result.scalars()
-        return render_template("index.html", shelf=all_books)
+        return render_template("index.html", shelf=all_books) #renders page with array of books named shelf
 
-
+#Gets the books inputted by particular user and displays them on a table. Similar to the homepage
 @app.route('/<int:user>', methods=["GET"])
 def show_books(user):
     with app.app_context():
-        result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id == user))
+        result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id == user)) #sql query that gets the books titles from records that match current user id 
         all_books = result.scalars()
         print(result)
-
-        return render_template("books.html", shelf=all_books)
+        return render_template("books.html", shelf=all_books) #renders page with array of books named shelf
 
 
 @app.route("/add", methods=["POST", "GET"])
-@login_required
+@login_required #wrapper that specifies that user needs to be logged in to see this page
 def add():
-    form=BookForm()
+    form=BookForm() 
     if request.method == "POST":
         with app.app_context():
             book1=Books(
-                title=request.form['name'],
+                title=request.form['name'], #from form
                 author=request.form['author'],
                 rating=request.form['rating'],
                 complete=request.form['status'],
                 id=db.session.query(Books.id).count() + 1,
                 user_id=current_user.id
-            )
+            ) #book information 
             db.session.add(book1)
             db.session.commit()
             return redirect(url_for('home'))
 
-    return render_template("add.html", form=form)
+    return render_template("add.html", form=form) #renders page with the form that users use to input book info
 
 
 @app.route('/edit', methods=["POST", "GET"])
