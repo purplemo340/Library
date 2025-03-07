@@ -5,12 +5,18 @@
 
   <h2 class="disclaimer">Welcome to my personal database of books. Click on each
   title to see any book logs associated with each book. If you have read any of the books below,
-      leave a comment to share your thought! Also, to create your own personal
+      leave a comment to share your thoughts! Also, to create your own personal
   library, click register to create your own account and log in. </h2>
 
-      {% if shelf==[] %}
+  {% if current_user.name=='admin' %}
+    <a href="{{url_for('add')}}">
+      <button class="add_book">Add New Book</button>
+    </a>
+  {% endif %}
+      {% if shelf.empty %}
       <p>Library is empty{{shelf.text}}</p>
       {% else %}
+      <div class="book_table">
       <table>
         <tr>
           <th> Title </th>
@@ -21,15 +27,15 @@
           <th> Choice </th>
             {% endif %}
         </tr>
-        {%for book in shelf:%}
+        {%for key, book in shelf.iterrows():%}
         <tr>
-          <td><a href="{{url_for('show_log', book_id=book.id)}}">{{book.title}}</a> </td>
+          <td><a class="books" href="{{url_for('show_log', book_id=book['id'])}}">{{book['title']}}</a> </td>
 
           <td> {{book['author']}} </td>
             <td>{{book['complete']}}</td>
           <td>{{book['rating']}} /10</td>
             {% if current_user.name=='admin' %}
-          <td><a href="{{url_for('edit', id=book.id)}}">
+          <td><a href="{{url_for('edit', id=book['id'])}}">
           <button>Edit</button>
         </a>
 
@@ -42,6 +48,7 @@
         </tr>
             {%endfor%}
       </table>
+      </div>
 {% endif %}
 
 
@@ -50,11 +57,7 @@
 
 
 
-    {% if current_user.name=='admin' %}
-    <a href="{{url_for('add')}}">
-      <button>Add New Book</button>
-    </a>
-  {% endif %}
+    
 
   </body>
 </html>

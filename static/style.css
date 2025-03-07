@@ -35,7 +35,7 @@ button:hover{
     background-color: var(--bs-dust-blue);
 }
 table{
-    width: 1200px;
+    width: 1000px;
     padding: 10px;
 }
 th, td{
@@ -80,20 +80,28 @@ text-align:center;
 padding:10px
 }
 .info{
-float:left;
-width:100%;
+float:center;
+width:75%;
 text-align:center;
+padding : 10px;
+border: solid;
+display: block;
+margin: auto;
 }
 .log_header{
 text-align:center;
 }
 .buttons{
 width:50%;
-float:left;
+position: relative;
+float:center;
+text-align: center;
+padding: 20px;
+margin: auto;
 }
 button{
 margin:10px;
-float: right
+float: center;
 }
 .logs::after{
 margin:20%;
@@ -128,4 +136,33 @@ margin:20%;
     min-width: 10px;
     background-color: var(--bs-dust-blue);
 }
-
+.form{
+    margin: auto;
+    text-align: center;
+}
+.mb-3{
+    margin: 10px;
+    font-size: large;
+}
+#submit{
+    background-color: var(--bs-purple);
+}
+a:link{
+    color:var(--bs-dark-brown);
+    text-decoration: none;
+    
+}
+a:visited{
+    color:var(--bs-dust-blue);
+    text-decoration: none;
+}
+.add_book{
+    float:right;
+    padding:10px;
+}
+.book_table{
+    margin: auto;
+    padding:10px;
+    float:right;
+    position:relative;
+}

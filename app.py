@@ -26,8 +26,10 @@ import os
 
 import discord
 from dotenv import load_dotenv
-
+from flask import jsonify
 load_dotenv()
+import csv
+import pandas as pd
 
 
 app = Flask(__name__)
@@ -61,8 +63,11 @@ db = SQLAlchemy(model_class=Base)
 
 data = os.getenv('Database_URL')
 app.config["SQLALCHEMY_DATABASE_URI"] = data
-
-db.init_app(app)
+try:
+    db.init_app(app)
+except:
+    print("Database Error")
+    #load csv
 
 
 class LoginForm(FlaskForm):
@@ -182,10 +187,21 @@ def home():
     
     with app.app_context():
         #cursor= conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
-        result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id==2))
+        try:
+            arr=[]
+            result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id==2))
+            for row in result.scalars():
+                l=[row.id, row.title, row.author, row.rating, row.complete, row.user_id]
+                arr.append(l)
+            all_books = pd.DataFrame(arr, columns=['id', 'title', 'author', 'rating', 'complete', 'user_id'])
+           
+        except:
+            all_books=pd.read_csv('books.csv')
+            all_books=all_books[all_books['user_id']==2]
+            print('Database Error')
 
-
-        all_books = result.scalars()
+        
+        
         return render_template("index.html", shelf=all_books)
 
 
@@ -403,4 +419,5 @@ def graph():
     return render_template("graph.html", months=months, form=form, day=day, month=month, pages=pages, arr=arr)
 if __name__ == "__main__":
     app.run(debug=True)
+    
 
