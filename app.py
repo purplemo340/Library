@@ -194,15 +194,17 @@ def home():
                 l=[row.id, row.title, row.author, row.rating, row.complete, row.user_id]
                 arr.append(l)
             all_books = pd.DataFrame(arr, columns=['id', 'title', 'author', 'rating', 'complete', 'user_id'])
+            message=''
            
         except:
+            message='Cannot login at this time'
             all_books=pd.read_csv('books.csv')
             all_books=all_books[all_books['user_id']==2]
             print('Database Error')
 
         
         
-        return render_template("index.html", shelf=all_books)
+        return render_template("index.html", shelf=all_books,message=message)
 
 
 @app.route('/<int:user>', methods=["GET"])

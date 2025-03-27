@@ -7,6 +7,7 @@
   title to see any book logs associated with each book. If you have read any of the books below,
       leave a comment to share your thoughts! Also, to create your own personal
   library, click register to create your own account and log in. </h2>
+  <h2>{{message.text}}</h2>
 
   {% if current_user.name=='admin' %}
     <a href="{{url_for('add')}}">
