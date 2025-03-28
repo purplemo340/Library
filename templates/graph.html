@@ -39,42 +39,22 @@
       {%endfor%}
 
     </table>
+    {% for i in range(365)%} 
     <div>
       
         {%for y in range(54)%}
-          <div class="col">
+          <div id="{{y}}" class="col">
           {%for x in range(7)%}
-            <p class="test">_</p>
+            <p id="{{x}}{{y}}" class="test">{{arr[y]}}</p>
           {%endfor%}
           </div>
       {%endfor%}
+     
       
     </div>
-    {%for page in pages%}
-    <h1>_</h1>
-    {%for x in range(365)%}
-    {%for m in page%}
-      
-        {%if x%7==0%}
-        <div >
-          {%if page[m]==0%}
-            <td class="zero" id="{{page['id']}}-{{m}}">{{page[m]}}</td>
-          {%elif page[m]  <= 0 %}
-            <td class="zero" id="{{page['id']}}-{{m}}">_</td>
-          {%elif page[m]>0 and page[m] <= 10 %}
-            <td class="one_to_ten" id="{{page['id']}}-{{m}}">{{page[m]}}</td>
-          {%elif page[m]>10 and page[m] <= 20 %}
-            <td class="ten_to_twenty" id="{{page['id']}}-{{m}}">{{page[m]}}</td>
-          {%elif page[m]>20 and page[m] <= 50 %}
-            <td class="twenty_to_fifty" id="{{page['id']}}-{{m}}">{{page[m]}}</td>
-          {%elif page[m]>50 %}
-            <td class="more_than_50" id="{{page['id']}}-{{m}}">{{page[m]}}</td>
-          {%endif%}
-        {%endif%}
-      {%endfor%}
-      {%endfor%}
-      {%endfor%}
-    </tr>
+    {%endfor%}
+    
+   
    
 </body>
 </html>

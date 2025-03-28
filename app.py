@@ -181,7 +181,44 @@ class Pages(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
 with app.app_context():
     db.create_all()
-
+def switch_add(value_update, value):
+    month=int(datetime.now().strftime('%m')) #today's day for comparison to row in table
+    if month==1:
+        value_update.Jan=value
+        return value_update
+    elif month==2:
+        value_update.Feb=value
+        return value_update
+    elif month==3:
+        value_update.Mar=value
+        return value_update
+    elif month==4:
+        value_update.Apr=value
+        return value_update
+    elif month==5:
+        value_update.May=value
+        return value_update
+    elif month==6:
+        value_update.Jun=value
+        return value_update
+    elif month==7:
+        value_update.Jul=value
+        return value_update
+    elif month==8:
+        value_update.Aug=value
+        return value_update    
+    elif month==9:
+        value_update.Sep=value
+        return value_update
+    elif month==10:
+        value_update.Oct=value
+        return value_update
+    elif month==11:
+        value_update.Nov=value
+        return value_update
+    elif month==12:
+        value_update.Dec=value 
+        return value_update
 @app.route('/', methods=["GET"])
 def home():
     
@@ -400,22 +437,43 @@ def graph():
     arr=[]
     
     months=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    m=[value_update.Jan, value_update.Feb, value_update.Mar, value_update.Apr, value_update.May,
-        value_update.Jun, value_update.Jul, value_update.Aug, value_update.Sep, value_update.Oct,
-        value_update.Nov, value_update.Dec]
     
-    result1 = db.session.execute(db.select(Pages).order_by(Pages.id))
-    for x in result1.scalars():
-        for m in x:
-            print(m)
+    
+    for i in range(1, 13):
+        result1 = db.session.execute(db.select(Pages).order_by(Pages.id))
+        for x in result1.scalars():
+            if i==1 and x.Jan!=-1:
+                arr.append(x.Jan)
+            elif i==2 and x.Feb!=-1:
+                arr.append(x.Feb)
+            elif i==3 and x.Mar!=-1:
+                arr.append(x.Mar)
+            elif i==4 and x.Apr!=-1:
+                arr.append(x.Apr)
+            elif i==5 and x.May!=-1:
+                arr.append(x.May)
+            elif i==6 and x.Jun!=-1:
+                arr.append(x.Jun)
+            elif i==7 and x.Jul!=-1:
+                arr.append(x.Jul)
+            elif i==8 and x.Aug!=-1:
+                arr.append(x.Aug)
+            elif i==9 and x.Sep!=-1:
+                arr.append(x.Sep)
+            elif i==10 and x.Oct!=-1:
+                arr.append(x.Oct)
+            elif i==11 and x.Nov!=-1:
+                arr.append(x.Nov)
+            elif i==12 and x.Dec!=-1:
+                arr.append(x.Dec)
+
     if request.method=="POST":
         new_value = form.pages.data
         old_value = day
         print(day)
         with app.app_context():
             value_update = db.session.execute(db.select(Pages).where(Pages.id == day)).scalar()
-            m[month_num-1] = new_value
-            print(value_update.Jan)
+            switch_add(value_update, new_value)
             db.session.commit()
             return redirect(url_for('home'))
     return render_template("graph.html", months=months, form=form, day=day, month=month, pages=pages, arr=arr)
