@@ -130,12 +130,19 @@ margin:20%;
 .col{
     width: 10px;
     float: left;
-    padding: 1px;
+    padding:0px;
     
 }
+
+.test::after{
+    clear: both;
+    padding:0px;
+}
 .test{
-    min-width: 10px;
-    background-color: var(--bs-dust-blue);
+    min-height: 10px;
+    padding:0px;
+    margin:0px;
+    
 }
 .form{
     margin: auto;

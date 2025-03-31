@@ -39,23 +39,40 @@
       {%endfor%}
 
     </table>
-    {% for i in range(365)%} 
+
     <div>
-      
-        {%for y in range(54)%}
-          <div id="{{y}}" class="col">
-          {%for x in range(7)%}
-            <p id="{{x}}{{y}}" class="test">{{arr[y]}}</p>
-          {%endfor%}
-          </div>
-      {%endfor%}
+      {% set count=namespace(value=0) %}
+       {% for x in range(54)%}
+       <div class="col">
+       {%for y in range(7)%}
+       
+       {% if count.value<364 %}
+          {% if arr[count.value] == 0 %}
+            <p class="zero test"> </p>
+          {% elif arr[count.value]>0 and arr[count.value] <= 10 %}
+            <p class="one_to_ten test"> </p>
+          {%elif arr[count.value]>10 and arr[count.value]<= 20 %}
+            <p class="ten_to_twenty test"> </p>
+          {%elif arr[count.value]>20 and arr[count.value] <= 50 %}
+            <p class="twenty_to_fifty test" > </p>
+          {%elif arr[count.value]>50 %}
+            <p class="more_than_50 test" > </p>
+          {%endif%}
+          {%set count.value=count.value+1%}   
+        {%endif%}
+        
+       {%endfor%}
+      </div>
+       {%endfor%}
+     
      
       
     </div>
-    {%endfor%}
+    
     
    
    
 </body>
+
 </html>
 {% endblock %}
