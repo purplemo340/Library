@@ -69,7 +69,7 @@ except:
     print("Database Error")
     #load csv
 
-
+#forms for Login, Register, Log, Book, Comment, Pages
 class LoginForm(FlaskForm):
     name = StringField("Username", validators=[DataRequired()])
     password=PasswordField("Password", validators=[DataRequired()])
@@ -94,13 +94,13 @@ class BookForm(FlaskForm):
     status = StringField("Finished?", validators=[DataRequired()])
     submit = SubmitField("Add Book")
 class CommentForm(FlaskForm):
-    #name = StringField("Book Name", validators=[DataRequired()])
-    #author = StringField("Author", validators=[DataRequired()])
     comment = CKEditorField("Thoughts?", validators=[DataRequired()])
     submit = SubmitField("Add Comment")
 class PageForm(FlaskForm):
     pages= StringField('Pages Read')
     submit = SubmitField("Add")
+
+#tables for books, users, logs, comments, pages
 class Books(db.Model):
     __tablename__ = "bookshelves"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -113,13 +113,9 @@ class Books(db.Model):
     logs: Mapped[List["Logs"]] = relationship(back_populates="book")
     #user to books
     user_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("readers.id"))
-    #user_name: Mapped[str] = mapped_column(String, db.ForeignKey("readers.name"))
-
     reader = relationship("User", back_populates="books")
-    #readers: Mapped[List["User"]] = relationship(back_populates="readers")
-    #user_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("readers.id"))
-
     comments: Mapped[List["Comments"]] = relationship(back_populates="book")
+
 class User(UserMixin, db.Model):
     __tablename__ = "readers"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -129,10 +125,8 @@ class User(UserMixin, db.Model):
     logs: Mapped[List["Logs"]] = relationship(back_populates="reader")
     #book to logs
     books: Mapped[List["Books"]] = relationship(back_populates="reader")
-
+    #comments to user
     comments:  Mapped[List["Comments"]] = relationship(back_populates="reader")
-
-
 
 class Logs(db.Model):
     __tablename__ = "book_logs"
@@ -157,13 +151,6 @@ class Comments(db.Model):
     book_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("bookshelves.id"))
     book = relationship("Books", back_populates="comments")
 
-#     title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
-#     author: Mapped[str] = mapped_column(String(250), nullable=False)
-#     comment: Mapped[str] = mapped_column(String(250), nullable=False)
-#     books: Mapped[List["Logs"]] = relationship(back_populates="book_log")
-#     reader: Mapped[List["User"]] = relationship(back_populates="readers")
-
-
 class Pages(db.Model):
     __tablename__ = "Pages_2025"
     Jan: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
@@ -179,8 +166,12 @@ class Pages(db.Model):
     Nov: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
     Dec: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
     id: Mapped[int] = mapped_column(primary_key=True)
+
+#initialize database
 with app.app_context():
     db.create_all()
+
+#switch function for updating the pages table
 def switch_add(value_update, value):
     month=int(datetime.now().strftime('%m')) #today's day for comparison to row in table
     if month==1:
@@ -219,22 +210,22 @@ def switch_add(value_update, value):
     elif month==12:
         value_update.Dec=value 
         return value_update
+
+#home page displays my books in database
 @app.route('/', methods=["GET"])
 def home():
-    
     with app.app_context():
-        #cursor= conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
         try:
-            arr=[]
+            book_list=[]
             result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id==2))
             for row in result.scalars():
-                l=[row.id, row.title, row.author, row.rating, row.complete, row.user_id]
-                arr.append(l)
-            all_books = pd.DataFrame(arr, columns=['id', 'title', 'author', 'rating', 'complete', 'user_id'])
+                books=[row.id, row.title, row.author, row.rating, row.complete, row.user_id]
+                book_list.append(books)
+            all_books = pd.DataFrame(book_list, columns=['id', 'title', 'author', 'rating', 'complete', 'user_id'])
             message=''
            
         except:
-            message='Cannot login at this time'
+            message='Database Error: Cannot login at this time. Please try again later.'
             all_books=pd.read_csv('books.csv')
             all_books=all_books[all_books['user_id']==2]
             print('Database Error')
@@ -243,17 +234,16 @@ def home():
         
         return render_template("index.html", shelf=all_books,message=message)
 
-
+# show list of books for specific user
 @app.route('/<int:user>', methods=["GET"])
 def show_books(user):
     with app.app_context():
         result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id == user))
         all_books = result.scalars()
         print(result)
-
         return render_template("books.html", shelf=all_books)
 
-
+#page to add a book to database
 @app.route("/add", methods=["POST", "GET"])
 @login_required
 def add():
@@ -274,7 +264,7 @@ def add():
 
     return render_template("add.html", form=form)
 
-
+#page to edit book in database
 @app.route('/edit', methods=["POST", "GET"])
 @login_required
 def edit():
@@ -309,7 +299,7 @@ def edit():
         all_books = result.scalars()
         return render_template("edit.html", id=old, shelf=all_books)
 
-
+#page to delete book from database
 @app.route('/delete')
 @login_required
 def delete():
@@ -321,7 +311,7 @@ def delete():
         return redirect(url_for('home'))
     return redirect(url_for('home'))
 
-
+#page to login
 @app.route('/login', methods=["POST", "GET"])
 def login():
     l_form=LoginForm()
@@ -340,14 +330,14 @@ def login():
 
     return render_template("login.html", form=l_form)
 
-
+#page to logout
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
 
-
+#page that allows users to register
 @app.route('/register', methods=["POST", "GET"])
 def register():
     r_form = RegisterForm()
@@ -368,7 +358,7 @@ def register():
             return redirect(url_for('login'))
     return render_template("register.html", form=r_form)
 
-
+#page to create a log for a book in the database
 @app.route('/log/<int:book_id>', methods=["POST", "GET"])
 @login_required
 def post_log(book_id):
@@ -389,7 +379,7 @@ def post_log(book_id):
         return redirect(url_for('show_log', book_id=book_id))
     return render_template('log.html', form=form, book_id=book_id, book_name=book)
 
-
+#page to show the logs for a specific book
 @app.route('/show_log/<int:book_id>', methods=["POST", "GET"])
 def show_log(book_id):
     result = db.session.execute(db.select(Logs).where(Logs.book_id == book_id))
@@ -398,10 +388,9 @@ def show_log(book_id):
     comments = result1.scalars().all()
     result2 = db.session.execute(db.select(Books).where(Books.id == book_id))
     book = result2.scalar()
-
     return render_template('show_log.html', all_logs=logs, book_id=book_id, comments=comments, book=book)
 
-
+#page to see and add comments to a book
 @app.route('/comment/<int:book_id>', methods=["POST", "GET"])
 def comment(book_id):
     form = CommentForm()
