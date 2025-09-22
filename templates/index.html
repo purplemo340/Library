@@ -10,13 +10,16 @@
   <h2>{{message.text}}</h2>
 
   {% if current_user.name=='admin' %}
+  <div>
     <a href="{{url_for('add')}}">
       <button class="add_book">Add New Book</button>
     </a>
+  </div>
   {% endif %}
       {% if shelf.empty %}
       <p>Library is empty{{shelf.text}}</p>
       {% else %}
+      <div class="center">
       <div class="book_table">
       <table>
         <tr>
@@ -49,6 +52,7 @@
         </tr>
             {%endfor%}
       </table>
+      </div>
       </div>
 {% endif %}
 

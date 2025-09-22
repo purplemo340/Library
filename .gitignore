@@ -240,3 +240,9 @@ fabric.properties
 
 #personal
 discord1.py
+books_logs.csv
+comments.csv
+bookshelves.csv
+bookshelves_updated.csv
+logs.csv
+pages.csv

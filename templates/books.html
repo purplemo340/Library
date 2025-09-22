@@ -1,11 +1,23 @@
  {% include 'header.html' %}
   <html>
   <body>
+  <h2 class="disclaimer">Welcome to your personal library. Click on each 
+    title to see any book logs associated with each book. To add a new Book
+    click on the button ' Add New Book'. Also there are options to edit or delete 
+  books from your personal library next to each book listed. </h2>
 
+ 
+    <a href="{{url_for('add')}}">
+      <button class="add_book">Add New Book</button>
+    </a>
 
-      {% if shelf==[] %}
-      <p>Library is empty{{shelf.text}}</p>
+      {% if shelf.empty %}
+      <div class="center">
+      <h2>Library is empty</h2>
+      </div>
       {% else %}
+      <div class="center">
+      <div class="book_table">
       <table>
         <tr>
           <th> Title </th>
@@ -13,23 +25,25 @@
           <th> Rating </th>
           <th> Choice </th>
         </tr>
-        {%for book in shelf:%}
+        {% for key, book in shelf.iterrows(): %}
         <tr>
-          <td><a href="{{url_for('show_log', book_id=book.id)}}">{{book.title}}</a> </td>
+          <td><a href="{{url_for('show_log', book_id=book['id'])}}">{{book['title']}}</a> </td>
 
           <td> {{book['author']}} </td>
           <td>{{book['rating']}} /10</td>
-          <td><a href="{{url_for('edit', id=book.id)}}">
+          <td><a href="{{url_for('edit', id=book['id'])}}">
           <button>Edit</button>
         </a>
 
-        <a href="{{url_for('delete', id=book.id)}}">
+        <a href="{{url_for('delete', id=book['id'])}}">
           <button>Delete</button>
         </a>
           </td>
         </tr>
             {%endfor%}
       </table>
+      </div>
+      </div>
 {% endif %}
 
 
@@ -38,9 +52,7 @@
 
 
 
-    <a href="{{url_for('add')}}">
-      <button>Add New Book</button>
-    </a>
+   
 
 
   </body>

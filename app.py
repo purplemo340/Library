@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, abort
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy import Integer, String, Float, Text, Boolean, ForeignKey
+from sqlalchemy import Integer, String, Float, Text, Boolean, ForeignKey, create_engine
 from typing import List
 from flask_wtf import FlaskForm
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
@@ -25,6 +25,7 @@ import sys
 import os
 
 import discord
+from discord.ext import commands
 from dotenv import load_dotenv
 from flask import jsonify
 load_dotenv()
@@ -59,15 +60,14 @@ class Base(DeclarativeBase):
   pass
 
 
-db = SQLAlchemy(model_class=Base)
 
+
+    
+db = SQLAlchemy(model_class=Base)
 data = os.getenv('Database_URL')
 app.config["SQLALCHEMY_DATABASE_URI"] = data
-try:
-    db.init_app(app)
-except:
-    print("Database Error")
-    #load csv
+db.init_app(app )
+
 
 #forms for Login, Register, Log, Book, Comment, Pages
 class LoginForm(FlaskForm):
@@ -95,6 +95,7 @@ class BookForm(FlaskForm):
     submit = SubmitField("Add Book")
 class CommentForm(FlaskForm):
     comment = CKEditorField("Thoughts?", validators=[DataRequired()])
+    name = StringField("Username", validators=[DataRequired()])
     submit = SubmitField("Add Comment")
 class PageForm(FlaskForm):
     pages= StringField('Pages Read')
@@ -168,10 +169,15 @@ class Pages(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
 
 #initialize database
-with app.app_context():
-    db.create_all()
+try:
+    with app.app_context():
+        db.create_all()
+except:
+    #load csv
+    print("Database Error")
 
 #switch function for updating the pages table
+#
 def switch_add(value_update, value):
     month=int(datetime.now().strftime('%m')) #today's day for comparison to row in table
     if month==1:
@@ -223,6 +229,7 @@ def home():
                 book_list.append(books)
             all_books = pd.DataFrame(book_list, columns=['id', 'title', 'author', 'rating', 'complete', 'user_id'])
             message=''
+            result.close()
            
         except:
             message='Database Error: Cannot login at this time. Please try again later.'
@@ -236,11 +243,16 @@ def home():
 
 # show list of books for specific user
 @app.route('/<int:user>', methods=["GET"])
+@login_required
 def show_books(user):
     with app.app_context():
         result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id == user))
-        all_books = result.scalars()
-        print(result)
+        book_list = []
+        for row in result.scalars():
+                books=[row.id, row.title, row.author, row.rating, row.complete, row.user_id]
+                book_list.append(books)
+        all_books = pd.DataFrame(book_list, columns=['id', 'title', 'author', 'rating', 'complete', 'user_id'])
+        result.close()
         return render_template("books.html", shelf=all_books)
 
 #page to add a book to database
@@ -295,9 +307,9 @@ def edit():
                 return redirect(url_for('home'))
     old = request.args.get('id')
     with app.app_context():
-        result = db.session.execute(db.select(Books).order_by(Books.title))
-        all_books = result.scalars()
-        return render_template("edit.html", id=old, shelf=all_books)
+        result = db.session.execute(db.select(Books).where(Books.id==old))
+        book = result.scalar()
+        return render_template("edit.html", id=old, book=book)
 
 #page to delete book from database
 @app.route('/delete')
@@ -396,20 +408,23 @@ def comment(book_id):
     form = CommentForm()
     result = db.session.execute(db.select(Books).where(Books.id == book_id))
     book = result.scalar()
-
+    name="Guest"
+    form.name.data=name
+    if current_user.is_authenticated:
+            form.name.data=current_user.name
     if request.method == "POST":
         with app.app_context():
             comment1 = Comments(
                 comment_text = form.comment.data,
                 date_created= datetime.now().strftime('%b. %d, %Y  %I:%M %p'),
-                username= current_user.name,
+                username= form.name.data,
                 book_id= book_id,
                 id=db.session.query(Comments.id).count() + 1
             )
             db.session.add(comment1)
             db.session.commit()
             return redirect(url_for('home'))
-
+        
     return render_template("add_comment.html", form=form, book=book)
 
 #graph
@@ -466,6 +481,7 @@ def graph():
             db.session.commit()
             return redirect(url_for('home'))
     return render_template("graph.html", months=months, form=form, day=day, month=month, pages=pages, arr=arr)
+
 if __name__ == "__main__":
     app.run(debug=True)
     

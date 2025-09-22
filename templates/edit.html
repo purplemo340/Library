@@ -1,6 +1,10 @@
 {% include "header.html"%}
 <html>
 <body>
+  <div class="center">
+  <h1>Edit Book</h1>
+  </div>
+  <div class="center">
     <form action="" method="POST">
       <label>Edit</label>
         <select name="choice">
@@ -11,16 +15,7 @@
       <input name="new_name" type="text" />
       <button type="submit">Update Book</button>
     </form>
-    <h1>My Library</h1>
-    <ul>
-      {% if shelf==False: %}
-      <p>Library is empty</p>
-      {% else %}
-      {%for book in shelf:%}
-      <li>{{book['title']}} - {{book['author']}} - {{book['rating']}} /10</li>
-      {%endfor%}
-      {% endif %}
-    </ul>
-
+    </div>
+{% include "book.html" %}
 </body>
 </html>

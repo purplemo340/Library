@@ -1,0 +1,15 @@
+{% from "bootstrap5/form.html" import render_form %} {% block content %} 
+<html>
+  <body>
+   <div class="info">
+       <h2>{{book.title}} </h2>
+       <h2>by</h2>
+       <h2>{{book.author}}</h2>
+
+
+   </div>
+   <div class="book_img">
+    <img  src="https://covers.openlibrary.org/b/olid/{{book.isbn}}-M.jpg">
+   </div>
+
+   {% endblock %}
