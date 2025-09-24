@@ -12,4 +12,3 @@ WTForms==3.0.1
 Werkzeug==3.0.0
 boto3>=1.26.79
 pytest>=7.2.1
-dotenv>=1.0.0

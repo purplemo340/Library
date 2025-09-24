@@ -24,9 +24,9 @@ import sys
 # bot.py
 import os
 
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 from flask import jsonify
-load_dotenv()
+##load_dotenv()
 import csv
 import pandas as pd
 
