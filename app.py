@@ -130,7 +130,7 @@ class User(UserMixin, db.Model):
 class Logs(db.Model):
     __tablename__ = "book_logs"
     id: Mapped[int] = mapped_column(primary_key=True)
-    log: Mapped[str] = mapped_column(Text, nullable=False)
+    log_text: Mapped[str] = mapped_column(Text, nullable=False)
     date_created: Mapped[str] = mapped_column(String(250), nullable=False)
     #book to logs
     book_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("bookshelves.id"))
