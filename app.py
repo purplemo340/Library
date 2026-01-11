@@ -483,6 +483,6 @@ def graph():
     return render_template("graph.html", months=months, form=form, day=day, month=month, pages=pages, arr=arr)
 port = os.getenv('port')
 if __name__ == "__main__":
-    app.run(debug=True, port=port)
+    app.run(debug=True)
     
 
