@@ -218,6 +218,8 @@ def switch_add(value_update, value):
 #home page displays my books in database
 @app.route('/', methods=["GET"])
 def home():
+    print(data)
+    print(port)
     with app.app_context():
         try:
             book_list=[]
@@ -479,8 +481,8 @@ def graph():
             db.session.commit()
             return redirect(url_for('home'))
     return render_template("graph.html", months=months, form=form, day=day, month=month, pages=pages, arr=arr)
-
+port = os.getenv('port')
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=port)
     
 
