@@ -65,7 +65,7 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 data = os.getenv('Database_URL')
 app.config["SQLALCHEMY_DATABASE_URI"] = str(data)
-
+db.init_app(app)
 
 #forms for Login, Register, Log, Book, Comment, Pages
 class LoginForm(FlaskForm):
