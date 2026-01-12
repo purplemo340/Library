@@ -33,6 +33,7 @@ import pandas as pd
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('Flask_Key')
+app.config
 Bootstrap5(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -63,8 +64,7 @@ class Base(DeclarativeBase):
     
 db = SQLAlchemy(model_class=Base)
 data = os.getenv('Database_URL')
-app.config["SQLALCHEMY_DATABASE_URI"] = data
-db.init_app(app )
+app.config["SQLALCHEMY_DATABASE_URI"] = str(data)
 
 
 #forms for Login, Register, Log, Book, Comment, Pages
@@ -483,6 +483,6 @@ def graph():
     return render_template("graph.html", months=months, form=form, day=day, month=month, pages=pages, arr=arr)
 port = os.getenv('port')
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=port)
     
 
