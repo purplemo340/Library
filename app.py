@@ -218,8 +218,6 @@ def switch_add(value_update, value):
 #home page displays my books in database
 @app.route('/', methods=["GET"])
 def home():
-    print(data)
-    print(port)
     with app.app_context():
         try:
             book_list=[]
