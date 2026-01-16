@@ -194,3 +194,15 @@ a:visited{
 	justify-content: center;
 	align-items: center;
 	}
+.left70{
+        width: 70%;
+    }
+.right30{
+        width: 30%;
+    }
+
+#picIndex{
+    height: 50%;
+    width: 60%;
+    margin-top: -60%;
+}

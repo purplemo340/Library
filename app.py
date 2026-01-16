@@ -63,7 +63,7 @@ class Base(DeclarativeBase):
 
     
 db = SQLAlchemy(model_class=Base)
-data = os.getenv('Database_URL')
+data = os.getenv('Database_URL')  #comment out dotenv
 app.config["SQLALCHEMY_DATABASE_URI"] = str(data)
 db.init_app(app)
 
@@ -223,9 +223,9 @@ def home():
             book_list=[]
             result = db.session.execute(db.select(Books).order_by(Books.title).where(Books.user_id==2))
             for row in result.scalars():
-                books=[row.id, row.title, row.author, row.rating, row.complete, row.user_id]
+                books=[row.id, row.title, row.author, row.rating, row.complete, row.user_id, row.isbn]
                 book_list.append(books)
-            all_books = pd.DataFrame(book_list, columns=['id', 'title', 'author', 'rating', 'complete', 'user_id'])
+            all_books = pd.DataFrame(book_list, columns=['id', 'title', 'author', 'rating', 'complete', 'user_id', 'isbn'])
             message=''
             result.close()
            
