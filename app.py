@@ -17,7 +17,8 @@ from flask_ckeditor import CKEditorField
 from datetime import datetime
 import os
 import psycopg2
-
+import re
+import requests
 
 import sys
 
@@ -26,7 +27,7 @@ import os
 
 #from dotenv import load_dotenv
 from flask import jsonify
-##load_dotenv()
+#load_dotenv()
 import csv
 import pandas as pd
 
@@ -260,16 +261,33 @@ def add():
     form=BookForm()
     if request.method == "POST":
         with app.app_context():
+            #get api response for the olid from open library; for the covers
+            try:
+                url= f"https://openlibrary.org/search.json?title={request.form['name']}&author={request.form['author']}&fields=key,title,editions&limit=1"
+                print(url)
+                response = requests.get(url)
+                key= response.json()['docs'][0]['editions']['docs'][0]['key']
+                #splits by \
+                ol=re.split('/', key)
+                #this is the olid
+                olid=ol[2]
+                #print olid
+                print(olid)
+            except:
+                print('Not in the Open Library')
+                olid=''
             book1=Books(
                 title=request.form['name'],
                 author=request.form['author'],
                 rating=request.form['rating'],
                 complete=request.form['status'],
                 id=db.session.query(Books.id).count() + 1,
-                user_id=current_user.id
+                user_id=current_user.id,
+                isbn=olid
             )
             db.session.add(book1)
             db.session.commit()
+            
             return redirect(url_for('home'))
 
     return render_template("add.html", form=form)
@@ -278,6 +296,7 @@ def add():
 @app.route('/edit', methods=["POST", "GET"])
 @login_required
 def edit():
+    old = request.args.get('id')
     if request.method == "POST":
         new_book = request.form['new_name']
         old_book = request.args.get('id')
@@ -302,6 +321,32 @@ def edit():
                 book_update.rating = new_book
 
                 db.session.commit()
+                return redirect(url_for('home'))
+        if request.form['choice'] == "isbn":
+            try:
+                with app.app_context(): ###### to do add statement for if isbn is added to database and remove input box when isbn is selected for choice
+                    result = db.session.execute(db.select(Books).where(Books.id==old))
+                    book = result.scalar()
+                    url= f"https://openlibrary.org/search.json?title={book.title}&author={book.author}&fields=key,title,editions&limit=1"
+                    print(url)
+                    response = requests.get(url)
+                    key= response.json()['docs'][0]['editions']['docs'][0]['key']
+                    #splits by \
+                    ol=re.split('/', key)
+                    #this is the olid
+                    olid=ol[2]
+                    #print olid
+                    print(olid)
+                
+                    
+                    book_update = db.session.execute(db.select(Books).where(Books.id == old_book)).scalar()
+                    book_update.isbn = olid
+
+                    db.session.commit()
+            except:
+                print('Not in the Open Library')
+                olid=''
+            
                 return redirect(url_for('home'))
     old = request.args.get('id')
     with app.app_context():
@@ -398,6 +443,7 @@ def show_log(book_id):
     comments = result1.scalars().all()
     result2 = db.session.execute(db.select(Books).where(Books.id == book_id))
     book = result2.scalar()
+        
     return render_template('show_log.html', all_logs=logs, book_id=book_id, comments=comments, book=book)
 
 #page to see and add comments to a book
