@@ -298,7 +298,7 @@ def add():
 def edit():
     old = request.args.get('id')
     if request.method == "POST":
-        new_book = request.form['new_name']
+        new_book = request.form['new_info']
         old_book = request.args.get('id')
         if request.form['choice'] == "author_option":
             with app.app_context():
@@ -306,7 +306,7 @@ def edit():
                 book_update.author = new_book
                 db.session.commit()
                 return redirect(url_for('home'))
-        if request.form['choice'] == "title_option":
+        elif request.form['choice'] == "title_option":
             with app.app_context():
 
                 book_update = db.session.execute(db.select(Books).where(Books.id == old_book)).scalar()
@@ -314,7 +314,7 @@ def edit():
 
                 db.session.commit()
                 return redirect(url_for('home'))
-        if request.form['choice'] == "rating_option":
+        elif request.form['choice'] == "rating_option":
             with app.app_context():
 
                 book_update = db.session.execute(db.select(Books).where(Books.id == old_book)).scalar()
@@ -322,9 +322,16 @@ def edit():
 
                 db.session.commit()
                 return redirect(url_for('home'))
-        if request.form['choice'] == "isbn":
+        elif request.form['choice'] == "read":
+            with app.app_context():
+
+                book_update = db.session.execute(db.select(Books).where(Books.id == old_book)).scalar()
+                book_update.complete = request.form['readOptions']
+                db.session.commit()
+                return redirect(url_for('home'))
+        elif request.form['choice'] == "isbn":
             try:
-                with app.app_context(): ###### to do add statement for if isbn is added to database and remove input box when isbn is selected for choice
+                with app.app_context(): ###### to do add statement for if isbn is added to database 
                     result = db.session.execute(db.select(Books).where(Books.id==old))
                     book = result.scalar()
                     url= f"https://openlibrary.org/search.json?title={book.title}&author={book.author}&fields=key,title,editions&limit=1"

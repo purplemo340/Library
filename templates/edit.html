@@ -1,19 +1,43 @@
 {% include "header.html"%}
 <html>
 <body>
+  <script>
+    function choices(){
+       let c=document.getElementById('choice');
+       var val = c.value;
+       if (val=='read'){
+        document.getElementById('choiceInput').setAttribute('hidden', 'hidden')
+        document.getElementById('readOptions').removeAttribute('hidden')
+       }
+       else{
+        document.getElementById('readOptions').setAttribute('hidden', 'hidden')
+        document.getElementById('choiceInput').removeAttribute('hidden')
+        if(val=='isbn'){
+        document.getElementById('choiceInput').setAttribute('hidden', 'hidden')
+       }
+       }
+    }
+  </script>
   <div class="center">
   <h1>Edit Book</h1>
   </div>
   <div class="center">
     <form action="" method="POST">
       <label>Edit</label>
-        <select name="choice">
+        <select onclick="choices()" name="choice" id="choice">
             <option value="title_option">Book Title</option>
             <option value="author_option">Author Name</option>
             <option value="rating_option">Rating</option>
+            <option value="read">Read?</option>
             <option value="isbn">ISBN</option>
         </select>
-      <input name="new_name" type="text" />
+      
+      <input id="choiceInput" name="new_info" type="text" />
+      <select name="readOptions" id="readOptions" hidden>
+        <option value="TBR"> TBR</option>
+        <option value="Currently"> Currently</option>
+        <option value="Read"> Read</option>
+      </select>
       <button type="submit">Update Book</button>
     </form>
     </div>
